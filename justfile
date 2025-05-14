@@ -13,8 +13,9 @@ build: clean
   {{ASM}} {{ASFLAGS}} src/boot/boot.s -o out/boot.o
   {{CC}} {{CFLAGS}} -c src/kernel/kernel.c -o out/kernel.o
   {{CC}} {{CFLAGS}} -c src/drivers/terminal.c -o out/terminal.o
+  {{CC}} {{CFLAGS}} -c src/drivers/serial.c -o out/serial.o
 
-  {{LD}} {{LDFLAGS}} -o bin/topos.bin out/boot.o out/kernel.o out/terminal.o
+  {{LD}} {{LDFLAGS}} -o bin/topos.bin out/boot.o out/kernel.o out/terminal.o out/serial.o
 
 grub:
   mkdir -p isodir/boot/grub
@@ -23,7 +24,7 @@ grub:
   grub-mkrescue -o topos.iso isodir
 
 run:
-  qemu-system-i386 -cdrom topos.iso
+  qemu-system-i386 -cdrom topos.iso -serial stdio
 
 clean:
   rm -rf out/ bin/
