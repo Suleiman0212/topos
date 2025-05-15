@@ -24,7 +24,8 @@ grub:
   grub-mkrescue -o topos.iso isodir
 
 run:
-  qemu-system-i386 -cdrom topos.iso -serial stdio
+  qemu-system-i386 -cdrom topos.iso -serial stdio -display sdl
+  clear
 
 clean:
   rm -rf out/ bin/

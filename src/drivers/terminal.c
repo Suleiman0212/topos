@@ -36,7 +36,9 @@ void terminal_set_color(enum vga_color foreground, enum vga_color background) {
   terminal_color = vga_entry_color(foreground, background);
 }
 
+// TODO: Add scrolling, '\b' char handling
 void terminal_write_char(const char data) {
+  // FIXME: Can be issue with it right now
   if (data == '\n') {
     terminal_row++;
     terminal_column = 0;

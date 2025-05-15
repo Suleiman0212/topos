@@ -27,8 +27,6 @@ char serial_read_char() {
   return inb(PORT);
 }
 
-// TODO: char *serial_read_string() {}
-
 int is_transmit_empty() { return inb(PORT + 5) & 0x20; }
 
 void serial_write_char(const char data) {
