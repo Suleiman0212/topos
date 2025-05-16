@@ -30,4 +30,4 @@ run:
 clean:
   rm -rf out/ bin/
 
-test: build grub run
+one: build grub run

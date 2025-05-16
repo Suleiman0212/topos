@@ -2,6 +2,16 @@
 #include "../drivers/terminal.h"
 #include <stdbool.h>
 
+// TODO:
+// Add terminal tcrolling
+// Improve terminal functionality
+// Create global description table (GDT)
+// Create interrupt description table (IDT)
+// Add interrupt requests (IRQ)
+
+// FIX:
+// Update terminal newline functionality
+
 void kernel_main(void) {
   // Initializing terminal
   terminal_initialize();
