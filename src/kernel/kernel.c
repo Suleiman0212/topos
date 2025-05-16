@@ -1,21 +1,27 @@
+#include "../cpu/gdt.h"
 #include "../drivers/serial.h"
 #include "../drivers/terminal.h"
 #include <stdbool.h>
 
 // TODO:
-// Add terminal tcrolling
-// Improve terminal functionality
+// Add terminal scrolling
+// Improve terminal functionality, add coloring
 // Create global description table (GDT)
 // Create interrupt description table (IDT)
 // Add interrupt requests (IRQ)
 
-// FIX:
-// Update terminal newline functionality
-
 void kernel_main(void) {
-  // Initializing terminal
+  // Initilizing terminal and serial
   terminal_initialize();
-
-  // Reading data from serial
+  terminal_set_color(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
+  terminal_clear();
   serial_initialize();
+  terminal_write_string("Kernel started!\n");
+  terminal_write_string("Terminal initialization...   [done]\n");
+  terminal_write_string("Serial initialization...     [done]\n");
+
+  // Initilizing GDT & IDT
+  terminal_write_string("GDT & TSS initialization...  ");
+  gdt_initialize();
+  terminal_write_string("[done]\n");
 }

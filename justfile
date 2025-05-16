@@ -11,11 +11,20 @@ LDFLAGS := "-T linker.ld -nostdlib"
 build: clean
   mkdir -p out/ bin/
   {{ASM}} {{ASFLAGS}} src/boot/boot.s -o out/boot.o
+
   {{CC}} {{CFLAGS}} -c src/kernel/kernel.c -o out/kernel.o
+
   {{CC}} {{CFLAGS}} -c src/drivers/terminal.c -o out/terminal.o
   {{CC}} {{CFLAGS}} -c src/drivers/serial.c -o out/serial.o
 
-  {{LD}} {{LDFLAGS}} -o bin/topos.bin out/boot.o out/kernel.o out/terminal.o out/serial.o
+  {{CC}} {{CFLAGS}} -c src/cpu/gdt.c -o out/gdt.o
+  {{ASM}} {{ASFLAGS}} src/cpu/gdt.s -o out/gdts.o
+
+  {{CC}} {{CFLAGS}} -c src/util/mem.c -o out/mem.o
+
+
+
+  {{LD}} {{LDFLAGS}} -o bin/topos.bin out/boot.o out/kernel.o out/terminal.o out/serial.o out/gdt.o out/gdts.o out/mem.o
 
 grub:
   mkdir -p isodir/boot/grub
