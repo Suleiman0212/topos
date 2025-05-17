@@ -6,7 +6,7 @@
 #define VGA_HEIGHT 25
 #define VGA_MEMORY 0xB8000
 
-enum vga_color {
+typedef enum {
   VGA_COLOR_BLACK = 0,
   VGA_COLOR_BLUE = 1,
   VGA_COLOR_GREEN = 2,
@@ -23,10 +23,16 @@ enum vga_color {
   VGA_COLOR_LIGHT_MAGENTA = 13,
   VGA_COLOR_LIGHT_BROWN = 14,
   VGA_COLOR_WHITE = 15,
-};
+} VgaColor;
 
 void terminal_initialize();
 void terminal_clear();
-void terminal_set_color(enum vga_color foreground, enum vga_color background);
+void terminal_set_color(VgaColor foreground, VgaColor background);
 void terminal_write_char(const char data);
 void terminal_write_string(const char *data);
+
+void terminal_enable_cursor(uint8_t cursor_start, uint8_t cursor_end);
+void terminal_disable_cursor();
+void terminal_cursor_set_position(uint16_t x, uint16_t y);
+void terminal_cursor_update_position();
+uint16_t terminal_cursor_get_position();

@@ -2,11 +2,9 @@
 #include "../drivers/serial.h"
 #include "../drivers/terminal.h"
 #include <stdbool.h>
+#include <stdint.h>
 
 // TODO:
-// Add terminal scrolling
-// Improve terminal functionality, add coloring
-// Create global description table (GDT)
 // Create interrupt description table (IDT)
 // Add interrupt requests (IRQ)
 
@@ -17,11 +15,11 @@ void kernel_main(void) {
   terminal_clear();
   serial_initialize();
   terminal_write_string("Kernel started!\n");
-  terminal_write_string("Terminal initialization...   [done]\n");
-  terminal_write_string("Serial initialization...     [done]\n");
+  terminal_write_string("Terminal initialization...   [@[G]done@[!]]\n");
+  terminal_write_string("Serial initialization...     [@[G]done@[!]]\n");
 
   // Initilizing GDT & IDT
   terminal_write_string("GDT & TSS initialization...  ");
   gdt_initialize();
-  terminal_write_string("[done]\n");
+  terminal_write_string("[@[G]done@[!]]\n");
 }
