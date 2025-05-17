@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#define ENTRIES_NUM 6
+#define GDT_ENTRIES_NUM 6
 
 typedef struct __attribute__((packed)) {
   uint16_t limit;

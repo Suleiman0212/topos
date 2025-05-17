@@ -2,7 +2,7 @@
 #include "../util/mem.h"
 #include <stdint.h>
 
-GdtEntry gdt_entries[ENTRIES_NUM];
+GdtEntry gdt_entries[GDT_ENTRIES_NUM];
 GdtPtr gdt_ptr;
 TssEntry tss_entry;
 
@@ -10,7 +10,7 @@ extern void gdt_flush(GdtPtr *);
 extern void tss_flush();
 
 void gdt_initialize() {
-  gdt_ptr.limit = (sizeof(GdtEntry) * ENTRIES_NUM) - 1;
+  gdt_ptr.limit = (sizeof(GdtEntry) * GDT_ENTRIES_NUM) - 1;
   gdt_ptr.base = (uint32_t)(uintptr_t)gdt_entries;
 
   gdt_set_gate(0, 0, 0, 0, 0);                // Null segment
