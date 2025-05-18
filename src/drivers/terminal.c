@@ -22,8 +22,6 @@ static inline size_t terminal_get_index() {
 }
 
 void terminal_initialize(void) {
-  terminal_row = 0;
-  terminal_column = 0;
   terminal_color = vga_entry_color(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
   terminal_clear();
   terminal_enable_cursor(13, 15);
@@ -33,10 +31,13 @@ void terminal_initialize(void) {
 void terminal_clear() {
   for (size_t y = 0; y < VGA_HEIGHT; y++) {
     for (size_t x = 0; x < VGA_WIDTH; x++) {
-      terminal_buffer[terminal_get_index()] = vga_entry(' ', terminal_color);
-      terminal_cursor_set_position(0, 0);
+      size_t index = y * VGA_WIDTH + x;
+      terminal_buffer[index] = vga_entry(' ', terminal_color);
     }
   }
+  terminal_row = 0;
+  terminal_column = 0;
+  terminal_cursor_set_position(0, 0);
 }
 
 void terminal_set_color(VgaColor foreground, VgaColor background) {
@@ -71,6 +72,7 @@ void terminal_write_char(const char data) {
     return;
   } else if (data == '\t') {
     terminal_write_string("    ");
+    return;
   } else if (data == '\b') {
     if (terminal_column > 0) {
       terminal_column--;
@@ -117,6 +119,12 @@ void terminal_write_string(const char *data) {
         break;
       case 'B':
         terminal_set_color(VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK);
+        break;
+      case 'C':
+        terminal_set_color(VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK);
+        break;
+      case 'M':
+        terminal_set_color(VGA_COLOR_LIGHT_MAGENTA, VGA_COLOR_BLACK);
         break;
       case '!':
         terminal_set_color(VGA_COLOR_WHITE, VGA_COLOR_BLACK);

@@ -16,15 +16,17 @@ build: clean
 
   {{CC}} {{CFLAGS}} -c src/drivers/terminal.c -o out/terminal.o
   {{CC}} {{CFLAGS}} -c src/drivers/serial.c -o out/serial.o
+  {{CC}} {{CFLAGS}} -c src/drivers/timer.c -o out/timer.o
 
   {{CC}} {{CFLAGS}} -c src/cpu/gdt.c -o out/gdt.o
   {{ASM}} {{ASFLAGS}} src/cpu/gdt.s -o out/gdts.o
   {{CC}} {{CFLAGS}} -c src/cpu/idt.c -o out/idt.o
   {{ASM}} {{ASFLAGS}} src/cpu/idt.s -o out/idts.o
+  {{CC}} {{CFLAGS}} -c src/cpu/pit.c -o out/pit.o
 
   {{CC}} {{CFLAGS}} -c src/util/mem.c -o out/mem.o
 
-  {{LD}} {{LDFLAGS}} -o bin/topos.bin out/boot.o out/kernel.o out/terminal.o out/serial.o out/gdt.o out/gdts.o out/idt.o out/idts.o out/mem.o
+  {{LD}} {{LDFLAGS}} -o bin/topos.bin out/boot.o out/kernel.o out/gdt.o out/gdts.o out/idt.o out/idts.o out/pit.o out/terminal.o out/serial.o out/timer.o out/mem.o 
 
 grub:
   mkdir -p isodir/boot/grub

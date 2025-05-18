@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdint.h>
 
 #define IDT_ENTRIES_NUM 256
@@ -27,6 +29,8 @@ void idt_initialize();
 void idt_set_gate(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags);
 
 void isr_handler(InterruptRegisters *regs);
+void irq_install_handler(int irq, void (*handler)(InterruptRegisters *r));
+void irq_uninstall_handler(int irq);
 
 extern void isr0();
 extern void isr1();

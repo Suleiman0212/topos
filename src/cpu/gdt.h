@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdint.h>
 
 #define GDT_ENTRIES_NUM 6
