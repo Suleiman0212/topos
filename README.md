@@ -55,7 +55,7 @@ just one # clean, build, iso, run
 
 - [x] **Terminal** (through `VGA Text Mode`) driver (text output)
 - [x] **Serial** driver (COM port)
-- [ ] **Timer** driver
+- [x] **Timer** driver
 - [ ] **Keyboard** driver
 - [ ] **Storage** drivers
   - [ ] **PATA** driver (ATA/IDE)
@@ -64,7 +64,7 @@ just one # clean, build, iso, run
 
 ### System
 
-- [ ] **GDT, IDT, IRQ**
+- [x] **GDT, IDT, IRQ**
 - [ ] **Memory management**
 - [ ] **Binary loader**
 - [ ] **System calls**
