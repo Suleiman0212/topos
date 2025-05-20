@@ -1,26 +1,12 @@
+#include "../applications/shell.h"
 #include "../cpu/gdt.h"
 #include "../cpu/idt.h"
 #include "../cpu/pit.h"
+#include "../drivers/keyboard.h"
 #include "../drivers/serial.h"
 #include "../drivers/terminal.h"
-#include "../drivers/timer.h"
 #include <stdbool.h>
 #include <stdint.h>
-
-// clang-format off
-const char* TOPOS_LOGO =
-"$$$$$$$$\\                   $$$$$$\\   $$$$$$\\  \n"
-"\\__$$  __|                 $$  __$$\\ $$  __$$\\ \n"
-"   $$ | $$$$$$\\   $$$$$$\\  $$ /  $$ |$$ /  \\__|\n"
-"   $$ |$$  __$$\\ $$  __$$\\ $$ |  $$ |\\$$$$$$\\  \n"
-"   $$ |$$ /  $$ |$$ /  $$ |$$ |  $$ | \\____$$\\ \n"
-"   $$ |$$ |  $$ |$$ |  $$ |$$ |  $$ |$$\\   $$ |\n"
-"   $$ |\\$$$$$$  |$$$$$$$  | $$$$$$  |\\$$$$$$  |\n"
-"   \\__| \\______/ $$  ____/  \\______/  \\______/                      @[R]v0.0.1 ALPHA@[!]"
-"                 $$ |                         \n"
-"                 $$ |                         \n"
-"                 \\__|                         \n";
-// clang-format on
 
 void kernel_main(void) {
   // Initilizing Terminal
@@ -46,20 +32,14 @@ void kernel_main(void) {
   terminal_write_string("\n\n\n");
   terminal_write_string(TOPOS_LOGO);
   terminal_write_string("\n\n\n");
-  terminal_write_string("|-[@[C]normal @[R]&@[!]]-> \n");
+  terminal_write_string("|-[@[C]normal @[R]&@[!]]-> ");
 
   // Initilizing PIT
   pit_initialize();
 
-  // OS loop
-  timer_start();
-  uint32_t last_second = 0;
+  // Initilizing Keyboard
+  keboard_initialize();
 
-  for (;;) {
-    uint32_t elapsed = timer_get_elapsed_milliseconds();
-    if (elapsed / 1000 > last_second) {
-      last_second = elapsed / 1000;
-      terminal_write_string("SECOND ELAPSED\n");
-    }
-  }
+  // Shell start
+  shell_run();
 }
