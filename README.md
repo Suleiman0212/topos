@@ -8,11 +8,12 @@ Made for **fun** and **educational** purposes.
 - GRUB bootloader
 - Terminal output
 - Serial port support
+- Keyboard support
 
 ## 🔧 Prerequisites
 
 - [`just`](https://github.com/casey/just) — a command runner (alternative to `make`)
-- `i686-elf-gcc`, `i686-elf-as`, `i686-elf-ld` — cross-compilation toolchainfor
+- `i686-elf-gcc`, `i686-elf-as`, `i686-elf-ld` — cross-compilation toolchain
   for i686 (you'll need to build it manually)
 - `grub-mkrescue`, `xorriso` — to create a bootable ISO with GRUB
 - `qemu-system-i386` - to run OS
@@ -46,42 +47,34 @@ just one # clean, build, iso, run
 
 ## 🧪 Roadmap
 
-### Bootloader
+### Milestone 1: Base Boot & Output
 
-- [x] GRUB bootloader
-- [ ] Custom bootloader
+- [x] GRUB Bootloader
+- [x] Terminal (VGA)
+- [x] Serial Driver
+- [x] Timer
+- [x] GDT / IDT / IRQ
 
-### Drivers
+### Milestone 2: Input & Memory
 
-- [x] **Terminal** (through `VGA Text Mode`) driver (text output)
-- [x] **Serial** driver (COM port)
-- [x] **Timer** driver
-- [ ] **Keyboard** driver
-- [ ] **Storage** drivers
-  - [ ] **PATA** driver (ATA/IDE)
-  - [ ] **AHCI** driver (SATA)
-  - [ ] **NVMe** driver, if I feel brave enough.
+- [x] Keyboard
+- [ ] Memory Management
 
-### System
+### Milestone 3: Shell & Execution
 
-- [x] **GDT, IDT, IRQ**
-- [ ] **Memory management**
-- [ ] **Binary loader**
-- [ ] **System calls**
-- [ ] **File System**
+- [ ] Modal Shell
+- [ ] Scripting Language
+- [ ] Binary Loader
+- [ ] System Calls
 
-### UI and Languages
+### Milestone 4: Storage & FS
 
-- [ ] **Modal shell**
-- [ ] **Scripting language / shell interpreter**
-- [ ] **Assembler** like NASM
-- [ ] **Compilable, system level language** like C
+- [ ] PATA / AHCI / NVMe Drivers
+- [ ] File System
 
-### Applications
+### Milestone 5: Language & Apps
 
-- [ ] **POSIX like utilites**
-- [ ] **Text editor**
-- [ ] **File manager**
-- [ ] **Base devel**
-- [ ] **Log viewver**
-- [ ] **Calculator**
+- [ ] Assembler
+- [ ] C Compiler
+- [ ] POSIX Utilities
+- [ ] Text Editor

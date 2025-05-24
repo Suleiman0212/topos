@@ -8,6 +8,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+// TODO: Rewrite the entire keyboard driver from scratch
+
 void kernel_main(void) {
   // Initilizing Terminal
   terminal_initialize();
@@ -38,7 +40,7 @@ void kernel_main(void) {
   pit_initialize();
 
   // Initilizing Keyboard
-  keboard_initialize();
+  keyboard_initialize();
 
   // Shell start
   shell_run();

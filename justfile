@@ -30,7 +30,7 @@ build: clean
 
   {{CC}} {{CFLAGS}} -c src/applications/shell.c -o out/shell.o
 
-  {{LD}} {{LDFLAGS}} -o bin/topos.bin out/boot.o out/kernel.o out/gdt.o out/gdts.o out/idt.o out/idts.o out/pit.o out/terminal.o out/serial.o out/timer.o out/keyboard.o out/mem.o out/str.o out/shell.o 
+  {{LD}} {{LDFLAGS}} -o bin/topos.bin out/boot.o out/kernel.o out/gdt.o out/gdts.o out/idt.o out/idts.o out/pit.o out/terminal.o out/serial.o out/timer.o out/keyboard.o out/mem.o out/str.o out/shell.o
 
 grub:
   mkdir -p isodir/boot/grub

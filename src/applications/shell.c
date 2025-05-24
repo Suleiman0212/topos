@@ -33,28 +33,14 @@ void shell_run() {
   char typed_buffer[256];
   typed_count = 0;
   typed_buffer[0] = '\0';
-
   while (true) {
-    KbPhysicalKey key = keyboard_read_phys_key();
-    int cch;
+    KeyboardKey key = keyboard_read_key();
+    int readed_ch = keyboard_key_to_char(key, keyboard_shift_pressed());
     char ch;
-    switch (key) {
-    case KB_PHYS_KEY_ESC:
-      terminal_clear();
-      ch = '\n';
-      break;
-    case KB_PHYS_KEY_INSERT:
-      parse_input("help");
-      ch = '\n';
-      break;
-    default:
-      cch = keyboard_phys_key_to_char(key, keyboard_shift_pressed(key));
-      if (cch != GAG_CHAR)
-        ch = (char)(unsigned char)cch;
-      else
-        return;
-      break;
-    }
+    if (readed_ch != GAG_CHAR)
+      ch = (char)(unsigned char)readed_ch;
+    else
+      continue;
 
     switch (ch) {
     case '\n':
