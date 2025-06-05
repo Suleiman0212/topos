@@ -5,10 +5,9 @@
 #include "../drivers/keyboard.h"
 #include "../drivers/serial.h"
 #include "../drivers/terminal.h"
+#include "heap.h"
 #include <stdbool.h>
 #include <stdint.h>
-
-// TODO: Rewrite the entire keyboard driver from scratch
 
 void kernel_main(void) {
   // Initilizing Terminal
@@ -18,7 +17,9 @@ void kernel_main(void) {
   // Initilizing Serial;
   terminal_write_string("Starting kernel...           [@[G]done@[!]]\n");
   terminal_write_string("Terminal initialization...   [@[G]done@[!]]\n");
-  terminal_write_string("Serial initialization...     [@[G]done@[!]]\n");
+  terminal_write_string("Serial initialization...     ");
+  serial_initialize();
+  terminal_write_string("[@[G]done@[!]]\n");
 
   // Initilizing GDT
   terminal_write_string("GDT & TSS initialization...  ");
@@ -30,17 +31,23 @@ void kernel_main(void) {
   idt_initialize();
   terminal_write_string("[@[G]done@[!]]\n");
 
+  // Initilizing PIT
+  terminal_write_string("PIT initialization...        ");
+  pit_initialize();
+  terminal_write_string("[@[G]done@[!]]\n");
+
+  // Initilizing Keyboard
+  terminal_write_string("Keyboard initialization...   ");
+  keyboard_initialize();
+  terminal_write_string("[@[G]done@[!]]\n");
+
+  // Initilizing heap
+  terminal_write_string("Heap initialization...       [@[G]done@[!]]\n");
+
   terminal_write_string("@[M]ALL SYSTEMS LOADED SUCCESFULL!@[!]");
   terminal_write_string("\n\n\n");
   terminal_write_string(TOPOS_LOGO);
   terminal_write_string("\n\n\n");
-  terminal_write_string("|-[@[C]normal @[R]&@[!]]-> ");
-
-  // Initilizing PIT
-  pit_initialize();
-
-  // Initilizing Keyboard
-  keyboard_initialize();
 
   // Shell start
   shell_run();

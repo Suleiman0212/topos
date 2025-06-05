@@ -4,9 +4,6 @@
  */
 
 #include "keyboard.h"
-#include "../cpu/ports.h"
-#include <stdbool.h>
-#include <stdint.h>
 
 const char KB_LOWERCASE_PRINTABLE[] = {
     GAG_CHAR, GAG_CHAR, '1',      '2',      '3',      '4',      '5',
@@ -78,16 +75,37 @@ KeyboardKey keyboard_read_key() {
   return buffer_pop();
 }
 
-int keyboard_key_to_char(KeyboardKey key, bool uppercase) {
+int keyboard_key_to_ascii(KeyboardKey key, bool uppercase) {
   if (key.pressed) {
-    return keyboard_key_scancode_to_char(key.scancode, uppercase);
+    return keyboard_key_scancode_to_ascii(key.scancode, uppercase);
   } else {
     return GAG_CHAR;
   }
 }
 
-int keyboard_key_scancode_to_char(uint32_t scancode, bool uppercase) {
+int keyboard_key_scancode_to_ascii(uint32_t scancode, bool uppercase) {
   uint32_t printable = scancode;
+
+  // Ignoring special keys
+  switch (scancode) {
+  case KB_KEY_CURSOR_UP:
+    return GAG_CHAR;
+  case KB_KEY_CURSOR_DOWN:
+    return GAG_CHAR;
+  case KB_KEY_CURSOR_LEFT:
+    return GAG_CHAR;
+  case KB_KEY_CURSOR_RIGHT:
+    return GAG_CHAR;
+  case KB_KEY_HOME:
+    return GAG_CHAR;
+  case KB_KEY_PAGE_UP:
+    return GAG_CHAR;
+  case KB_KEY_PAGE_DOWN:
+    return GAG_CHAR;
+  case KB_KEY_END:
+    return GAG_CHAR;
+  }
+
   if (scancode > 0xE000)
     printable -= 0xE000;
   if (printable < KB_KEYPAD_FULLSTOP) {
@@ -119,8 +137,7 @@ void keyboard_handler(InterruptRegisters *regs) {
   else if (scancode == KB_KEY_RSHIFT)
     rshift_pressed = pressed;
 
-  KeyboardKey key = {scancode, pressed};
-  buffer_push(key);
+  buffer_push((KeyboardKey){scancode, pressed});
 
   e0 = false;
 }

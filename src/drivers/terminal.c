@@ -1,11 +1,8 @@
 #include "terminal.h"
-#include "../cpu/ports.h"
-#include <stddef.h>
-#include <stdint.h>
 
-size_t terminal_row;
-size_t terminal_column;
-uint8_t terminal_color;
+size_t cursor_pos_x = 0; // Column
+size_t cursor_pos_y = 0; // Row
+uint8_t font_color;
 uint16_t *terminal_buffer = (uint16_t *)VGA_MEMORY;
 
 static inline uint8_t vga_entry_color(VgaColor foreground,
@@ -17,31 +14,31 @@ static inline uint16_t vga_entry(uint8_t entry, uint8_t color) {
   return (uint16_t)entry | (uint16_t)color << 8;
 }
 
-static inline size_t terminal_get_index() {
-  return terminal_row * VGA_WIDTH + terminal_column;
+static inline size_t cursor_get_index() {
+  return cursor_pos_y * VGA_WIDTH + cursor_pos_x;
 }
 
 void terminal_initialize(void) {
-  terminal_color = vga_entry_color(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
+  font_color = vga_entry_color(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
   terminal_clear();
   terminal_enable_cursor(13, 15);
-  terminal_cursor_set_position(0, 0);
+  terminal_cursor_update_position();
 }
 
 void terminal_clear() {
   for (size_t y = 0; y < VGA_HEIGHT; y++) {
     for (size_t x = 0; x < VGA_WIDTH; x++) {
       size_t index = y * VGA_WIDTH + x;
-      terminal_buffer[index] = vga_entry(' ', terminal_color);
+      terminal_buffer[index] = vga_entry(' ', font_color);
     }
   }
-  terminal_row = 0;
-  terminal_column = 0;
-  terminal_cursor_set_position(0, 0);
+  cursor_pos_x = 0;
+  cursor_pos_y = 0;
+  terminal_cursor_update_position();
 }
 
 void terminal_set_color(VgaColor foreground, VgaColor background) {
-  terminal_color = vga_entry_color(foreground, background);
+  font_color = vga_entry_color(foreground, background);
 }
 
 void terminal_scroll() {
@@ -54,57 +51,58 @@ void terminal_scroll() {
 
   for (size_t x = 0; x < VGA_WIDTH; x++) {
     terminal_buffer[(VGA_HEIGHT - 1) * VGA_WIDTH + x] =
-        vga_entry(' ', terminal_color);
+        vga_entry(' ', font_color);
   }
 
-  terminal_row = VGA_HEIGHT - 1;
-  terminal_cursor_set_position(0, 0);
+  cursor_pos_y = VGA_HEIGHT - 1;
+  cursor_pos_x = 0;
+  terminal_cursor_update_position();
 }
 
 void terminal_write_char(const char data) {
-  if (data == '\n') {
-    terminal_row++;
-    terminal_column = 0;
-    if (terminal_row == VGA_HEIGHT) {
+  switch (data) {
+  case '\n':
+    cursor_pos_x = 0;
+    cursor_pos_y++;
+    if (cursor_pos_y == VGA_HEIGHT) {
       terminal_scroll();
     }
     terminal_cursor_update_position();
     return;
-  } else if (data == '\t') {
+
+  case '\t':
     terminal_write_string("    ");
     return;
-  } else if (data == '\b') {
-    if (terminal_column > 0) {
-      terminal_column--;
-    } else if (terminal_row > 0) {
-      terminal_row--;
-      terminal_column = VGA_WIDTH - 1;
+
+  case '\b':
+    if (cursor_pos_x > 0) {
+      cursor_pos_x--;
+    } else if (cursor_pos_y > 0) {
+      cursor_pos_y--;
+      cursor_pos_x = VGA_WIDTH - 1;
     } else {
       return;
     }
-    terminal_buffer[terminal_get_index()] = vga_entry(' ', terminal_color);
+    terminal_buffer[cursor_get_index()] = vga_entry(' ', font_color);
     terminal_cursor_update_position();
     return;
-  } else if (data == '\f') {
-    terminal_clear();
-    terminal_row = 0;
-    terminal_column = 0;
-    terminal_cursor_update_position();
-    return;
+
+  default:
+    break;
   }
 
-  terminal_buffer[terminal_get_index()] = vga_entry(data, terminal_color);
+  terminal_buffer[cursor_get_index()] = vga_entry(data, font_color);
+  cursor_pos_x++;
 
-  terminal_column++;
-  terminal_cursor_update_position();
-  if (terminal_column == VGA_WIDTH) {
-    terminal_column = 0;
-    terminal_row++;
-    terminal_cursor_update_position();
-    if (terminal_row == VGA_HEIGHT) {
+  if (cursor_pos_x == VGA_WIDTH) {
+    cursor_pos_x = 0;
+    cursor_pos_y++;
+    if (cursor_pos_y == VGA_HEIGHT) {
       terminal_scroll();
     }
   }
+
+  terminal_cursor_update_position();
 }
 
 void terminal_write_string(const char *data) {
@@ -137,6 +135,13 @@ void terminal_write_string(const char *data) {
       continue;
     }
 
+    // Экранирование "@[" → просто вывод
+    if (data[0] == '@' && data[1] == '[') {
+      terminal_write_char('@');
+      data++;
+      continue;
+    }
+
     terminal_write_char(*data);
     data++;
   }
@@ -156,6 +161,8 @@ void terminal_disable_cursor() {
 }
 
 void terminal_cursor_set_position(uint16_t x, uint16_t y) {
+  cursor_pos_x = x;
+  cursor_pos_y = y;
   uint16_t pos = y * VGA_WIDTH + x;
 
   outb(0x3D4, 0x0F);
@@ -165,7 +172,7 @@ void terminal_cursor_set_position(uint16_t x, uint16_t y) {
 }
 
 void terminal_cursor_update_position() {
-  terminal_cursor_set_position(terminal_column, terminal_row);
+  terminal_cursor_set_position(cursor_pos_x, cursor_pos_y);
 }
 
 uint16_t terminal_cursor_get_position() {

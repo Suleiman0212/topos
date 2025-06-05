@@ -1,6 +1,4 @@
 #include "gdt.h"
-#include "../util/mem.h"
-#include <stdint.h>
 
 GdtEntry gdt_entries[GDT_ENTRIES_NUM];
 GdtPtr gdt_ptr;

@@ -3,7 +3,9 @@
  * WORKS ONLY ON BIOS OR UIFI WITH CSM/LEGACY SUPPORT
  */
 
+#pragma once
 #include "../cpu/idt.h"
+#include "../cpu/ports.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -134,14 +136,12 @@ KeyboardKey keyboard_get_key();
 /// Return associated char for keyboard key ONLY IF KEY PRESSED.
 /// You MUST check if char isn't a GAG_CHAR before cast/using it.
 /// Proper cast: (char)(unsigned char) from int
-int keyboard_key_to_char(KeyboardKey key, bool uppercase);
+int keyboard_key_to_ascii(KeyboardKey key, bool uppercase);
 /// Return associated char for keyboard key scancode.
 /// You MUST check if char isn't a GAG_CHAR before cast/using it.
 /// Proper cast: (char)(unsigned char) from int
-int keyboard_key_scancode_to_char(uint32_t scancode, bool uppercase);
+int keyboard_key_scancode_to_ascii(uint32_t scancode, bool uppercase);
 /// Function associated with keyboard interrupts, DONT USE IT.
 void keyboard_handler(InterruptRegisters *regs);
 /// Keyboard state function
 bool keyboard_shift_pressed();
-/// Keyboard state function
-bool keyboard_capslock_pressed();

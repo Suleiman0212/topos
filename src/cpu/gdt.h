@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../std/mem.h"
 #include <stdint.h>
 
 #define GDT_ENTRIES_NUM 6

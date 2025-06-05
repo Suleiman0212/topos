@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../cpu/ports.h"
 
 #define PORT 0x3f8

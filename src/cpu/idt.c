@@ -1,8 +1,4 @@
 #include "idt.h"
-#include "../drivers/terminal.h"
-#include "../util/mem.h"
-#include "ports.h"
-#include <stdint.h>
 
 IdtEntry idt_entries[IDT_ENTRIES_NUM];
 IdtPtr idt_ptr;
@@ -137,6 +133,9 @@ void isr_handler(InterruptRegisters *regs) {
     terminal_write_string("\nSystem halted.");
     for (;;)
       ;
+  }
+  if (regs->int_no == 128) {
+    // Syscall catch
   }
 }
 

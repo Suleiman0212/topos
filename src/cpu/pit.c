@@ -1,7 +1,6 @@
 #include "pit.h"
-#include "ports.h"
 
-uint64_t ticks = 0;
+uint64_t ticks_left = 0;
 
 void pit_initialize() {
   irq_install_handler(0, &pit_handler);
@@ -13,10 +12,17 @@ void pit_initialize() {
   outb(0x40, (uint8_t)((divisor >> 8) & 0xFF));
 }
 
-uint64_t pit_get_ticks() { return ticks; }
+void pit_cpu_sleep(uint64_t ms) {
+  ticks_left = ms;
+  while (ticks_left > 0) {
+    asm("hlt");
+  }
+}
 
 void pit_handler(InterruptRegisters *regs) {
   (void)regs;
 
-  ticks++;
+  if (ticks_left > 0) {
+    ticks_left -= 1;
+  }
 }

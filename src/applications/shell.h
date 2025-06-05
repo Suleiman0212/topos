@@ -1,3 +1,9 @@
+#include "../drivers/keyboard.h"
+#include "../drivers/terminal.h"
+#include "../std/str.h"
+#include <stdbool.h>
+#include <stdint.h>
+
 // clang-format off
 static const char* TOPOS_LOGO =
 "$$$$$$$$\\                   $$$$$$\\   $$$$$$\\  \n"
@@ -12,5 +18,7 @@ static const char* TOPOS_LOGO =
 "                 $$ |                         \n"
 "                 \\__|                         \n";
 // clang-format on
+
+#define BUFFER_SIZE 128
 
 void shell_run();

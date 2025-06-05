@@ -9,6 +9,7 @@ Made for **fun** and **educational** purposes.
 - Terminal output
 - Serial port support
 - Keyboard support
+- Simple shell
 
 ## 🔧 Prerequisites
 
@@ -78,3 +79,11 @@ just one # clean, build, iso, run
 - [ ] C Compiler
 - [ ] POSIX Utilities
 - [ ] Text Editor
+
+## Goal
+
+> `TopOS` is a project that I want turn to **simple dev system**,
+> where you can launch OS, write your own program in the embedded editor,
+> compile and launch it.
+>
+> `TopOS` author - _Suleiam Kirimov_.

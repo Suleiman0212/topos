@@ -1,5 +1,8 @@
 #pragma once
 
+#include "../drivers/terminal.h"
+#include "../std/mem.h"
+#include "ports.h"
 #include <stdint.h>
 
 #define IDT_ENTRIES_NUM 256

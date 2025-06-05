@@ -13,10 +13,10 @@ build: clean
   {{ASM}} {{ASFLAGS}} src/boot/boot.s -o out/boot.o
 
   {{CC}} {{CFLAGS}} -c src/kernel/kernel.c -o out/kernel.o
+  {{CC}} {{CFLAGS}} -c src/kernel/heap.c -o out/heap.o
 
   {{CC}} {{CFLAGS}} -c src/drivers/terminal.c -o out/terminal.o
   {{CC}} {{CFLAGS}} -c src/drivers/serial.c -o out/serial.o
-  {{CC}} {{CFLAGS}} -c src/drivers/timer.c -o out/timer.o
   {{CC}} {{CFLAGS}} -c src/drivers/keyboard.c -o out/keyboard.o
 
   {{CC}} {{CFLAGS}} -c src/cpu/gdt.c -o out/gdt.o
@@ -25,12 +25,12 @@ build: clean
   {{ASM}} {{ASFLAGS}} src/cpu/idt.s -o out/idts.o
   {{CC}} {{CFLAGS}} -c src/cpu/pit.c -o out/pit.o
 
-  {{CC}} {{CFLAGS}} -c src/util/mem.c -o out/mem.o
-  {{CC}} {{CFLAGS}} -c src/util/str.c -o out/str.o
+  {{CC}} {{CFLAGS}} -c src/std/mem.c -o out/mem.o
+  {{CC}} {{CFLAGS}} -c src/std/str.c -o out/str.o
 
   {{CC}} {{CFLAGS}} -c src/applications/shell.c -o out/shell.o
 
-  {{LD}} {{LDFLAGS}} -o bin/topos.bin out/boot.o out/kernel.o out/gdt.o out/gdts.o out/idt.o out/idts.o out/pit.o out/terminal.o out/serial.o out/timer.o out/keyboard.o out/mem.o out/str.o out/shell.o
+  {{LD}} {{LDFLAGS}} -o bin/topos.bin out/boot.o out/kernel.o out/heap.o out/gdt.o out/gdts.o out/idt.o out/idts.o out/pit.o out/terminal.o out/serial.o out/keyboard.o out/mem.o out/str.o out/shell.o
 
 grub:
   mkdir -p isodir/boot/grub

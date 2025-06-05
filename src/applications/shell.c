@@ -1,72 +1,70 @@
 #include "shell.h"
-#include "../drivers/keyboard.h"
-#include "../drivers/terminal.h"
-#include "../util/str.h"
-#include <stdbool.h>
-#include <stdint.h>
 
-uint8_t typed_count;
+char typed_buffer[BUFFER_SIZE];
+uint8_t typed_count = 0;
 
-void parse_input(char *buffer) {
-  if (strcmp("help", buffer) == 0) {
-    terminal_write_string("\n\nCommands:\n\t@[B]help@[!] - to show "
-                          "this\n\t@[B]topos@[!] - to show "
-                          "OS info\n\t@[B]clear@[!] - to clear terminal\n");
-  } else if (strcmp("topos", buffer) == 0) {
-    terminal_write_string("\n\n\n");
-    terminal_write_string(TOPOS_LOGO);
-    terminal_write_string("\n");
-    terminal_write_string(
-        "@[R]ABSOLUTE NO WARRANTY. USE AT YOUR OWN RISK.\n@[!]TOPOS "
-        "IS A X86 OPERATING SYSTEM DEVELOPED BY @[B]SULEIMAN "
-        "KIRIMOV@[!] IN @[G]2025@[!].\n");
-  } else if (strcmp("clear", buffer) == 0) {
-    terminal_clear();
-  } else if (typed_count > 0) {
-    terminal_write_string("\n @[R]Error@[!]: Unknown command!");
-  } else {
+void type_shell() { terminal_write_string("\n|-[@[C]normal @[R]&@[!]]-> "); }
+
+void command_help() { terminal_write_string("\nThere is no help.\n"); }
+
+void command_clear() { terminal_clear(); }
+
+void parse_command() {
+  if (typed_count == 0) {
+    type_shell();
     return;
+  }
+
+  if (strncmp(typed_buffer, "help", typed_count) == 0) {
+    command_help();
+  } else if (strncmp(typed_buffer, "clear", typed_count) == 0) {
+    command_clear();
+  } else {
+    terminal_write_string("\n@[R]Error@[!]: invalid command!\n");
+  }
+  type_shell();
+}
+
+void type_ascii(char ascii) {
+  typed_buffer[typed_count++] = ascii;
+  terminal_write_char(ascii);
+}
+
+void parse_ascii(char ascii) {
+  switch (ascii) {
+  case '\n':
+    parse_command();
+    typed_count = 0;
+    break;
+  case '\b':
+    if (typed_count > 0) {
+      typed_count--;
+      terminal_write_char('\b');
+    }
+    break;
+  case '\t':
+    typed_count += 3;
+    type_ascii(ascii);
+    break;
+  default:
+    type_ascii(ascii);
+    break;
   }
 }
 
 void shell_run() {
-  char typed_buffer[256];
-  typed_count = 0;
-  typed_buffer[0] = '\0';
-  while (true) {
-    KeyboardKey key = keyboard_read_key();
-    int readed_ch = keyboard_key_to_char(key, keyboard_shift_pressed());
-    char ch;
-    if (readed_ch != GAG_CHAR)
-      ch = (char)(unsigned char)readed_ch;
-    else
-      continue;
+  KeyboardKey key;
+  int printable;
+  char ascii;
 
-    switch (ch) {
-    case '\n':
-      typed_buffer[typed_count] = '\0';
-      char *trimmed = typed_buffer;
-      while (*trimmed == ' ')
-        trimmed++;
-      parse_input(trimmed);
-      terminal_write_string("\n|-[@[C]normal @[R]&@[!]]-> ");
-      typed_count = 0;
-      typed_buffer[0] = '\0';
-      break;
-    case '\b':
-      if (typed_count > 0) {
-        typed_count--;
-        terminal_write_string("\b");
-      }
-      break;
-    case '\t':
-      typed_count += 3;
-    default:
-      if (typed_count < sizeof(typed_buffer) - 1) {
-        typed_buffer[typed_count++] = ch;
-        terminal_write_char(ch);
-      }
-      break;
-    }
+  type_shell();
+  while (true) {
+    key = keyboard_read_key();
+
+    printable = keyboard_key_to_ascii(key, keyboard_shift_pressed());
+    if (printable == GAG_CHAR)
+      continue;
+    ascii = (char)(unsigned char)printable;
+    parse_ascii(ascii);
   }
 }
